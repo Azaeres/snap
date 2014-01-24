@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "coffee-script": "~1.6.3",
-    "underscore": "~1.5.2"
+    "underscore": "~1.5.2",
+    "action-queue": "git://github.com/ryancbarry/action-queue.git"
   }
 }
