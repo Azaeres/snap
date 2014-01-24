@@ -1,5 +1,5 @@
 {
-  "name": "snap-chain",
+  "name": "snap",
   "version": "0.0.1",
   "description": "Action queue and simple constraining tool",
   "main": "index.js",
