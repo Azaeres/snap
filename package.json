@@ -1,6 +1,6 @@
 {
   "name": "snap",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Action queue and simple constraining tool",
   "main": "index.js",
   "scripts": {
@@ -8,10 +8,9 @@
   },
   "author": "Ryan Barry",
   "license": "ISC",
-  "repository" :
-  {
-    "type" : "git",
-    "url" : "https://github.com/ryancbarry/snap.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ryancbarry/snap.git"
   },
   "dependencies": {
     "coffee-script": "~1.6.3",
