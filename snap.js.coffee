@@ -161,9 +161,8 @@ class SnapChain
         # Logs an error if the snapshot isn't what we expected.
         log differences(snapshot, expectation)
 
-        # log snapshot, expectation  unless 
-        
-        # After running the comparison, we should stop waiting and run the next step.
+        # After running the comparison, we should stop waiting.
+        # The onComplete callback then runs the next step.
         @_actionQueue.complete()
 
       gathererContext = {}
@@ -173,7 +172,8 @@ class SnapChain
         unless _.isEmpty(settings.expect)
           compare snapshot, settings.expect
         else
-          # Stop waiting and run the next step.
+          # Stop waiting.
+          # The onComplete callback then runs the next step.
           @_actionQueue.complete()
 
       
@@ -197,11 +197,12 @@ class SnapChain
     # Adds the link's action to the queue.
     @_actionQueue.addAction =>
       
-      # Every step waits.
-      @_actionQueue.wait =>
-        
-        # After waiting, run the next step.
+      # On complete, run the next step.
+      @_actionQueue.onComplete =>
         @_actionQueue.runNextStep()
+
+      # Every step waits.
+      @_actionQueue.wait()
 
       
       # Increment the link count and call the mutator.
