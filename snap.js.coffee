@@ -210,7 +210,7 @@ class SnapChain
       
       # Increment the link count and call the mutator.
       @_index++
-      mutator.call @_mutatorContext, @_go, @_index, @name
+      mutator.call @_mutatorContext, @_go, @_index, @name, @
 
     
     # After we load the first action into the queue, run it.

@@ -90,9 +90,10 @@ describe "Snap chain", ->
     it "should give each chain transformation access to a common context", ->
       chain = new SnapChain "Test chain"
 
-      chain.snap "1st chain transformation", (go, i, name) ->
+      chain.snap "1st chain transformation", (go, i, name, c) ->
         assert(i == 0, "arg index should be 0")
         assert(name == "1st chain transformation", "arg name is not what we set it to")
+        assert.deepEqual(c, chain, "chain object should be passed into transformation")
         go()
       assert.deepEqual(chain._mutatorContext, {})
       assert(chain._index == 0, "index should be 0")
