@@ -36,8 +36,8 @@
         go({
         
           // `gather` (optional) should be a function that gathers some information we're interested in checking, and packages it into an object for inspection.
-          // Once a gatherer is set like this, it'll be run between link transitions to gather an updated
-          // snapshot of that information for another comparison.
+          // Once a gatherer is set like this, it'll be re-run between chain links to gather fresh
+          // snapshots of that information for another comparison.
           gather: function(go) {
             go({ 'jquery version':$.fn.jquery });
           },
