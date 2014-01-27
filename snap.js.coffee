@@ -60,8 +60,8 @@ class SnapChain
         # We'll clone the input here so that we see what they looked like
         # at the time they were logged to console, instead of being a live 
         # reference to the object.
-        snapshot = _.clone(snapshot)
-        expectation = _.clone(expectation)
+        snapshot = _.clone(snapshot) || {}
+        expectation = _.clone(expectation) || {}
         
         diffs = []
         _(expectation).each (value, key) =>
@@ -98,7 +98,7 @@ class SnapChain
         diffCount
       
       # Gather our state.
-      settings.gather.call gathererContext, next
+      settings.gather.call gathererContext, next, @_index, @name, @
 
     @_mutatorContext = {}
       

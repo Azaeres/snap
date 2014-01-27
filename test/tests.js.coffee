@@ -202,8 +202,69 @@ describe "Snap chain", ->
       assert(gatherer2.callCount == 3, "gatherer2 was called "+gatherer2.callCount+" times, but should've been called three times")
       assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
 
-    # TODO:
-    # Test setting `expect` before `gather` is set.
-    # 
+    it "should accept an expectation even if we haven't set a gatherer yet", ->
+      stuff =
+        foo: 'bar'
+        baz: 12
+      chain = new SnapChain "Test chain"
+
+      diffCount = 0
+      chain.snap "1st chain transformation", (go) ->
+        go(expect:{foo:'bar'})
+      assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
+
+      chain.snap "2nd chain transformation", (go) ->
+        go(gather: (go) ->
+          diffCount = go(stuff)
+        , expect:{foo:'bar'})
+      assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
+
+      chain.snap "3rd chain transformation", (go) ->
+        go(expect:{foo:'bar'})
+      assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
+
+      chain.snap "4th chain transformation", (go) ->
+        go()
+      assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
+
+      chain.snap "5th chain transformation", (go) ->
+        go(expect:{foo:'baz'})
+      assert(diffCount == 1, "diff count was "+diffCount+", but should've been 1")
+
+    it "should let the link name be optional", ->
+      stuff =
+        foo: 'bar'
+        baz: 12
+      chain = new SnapChain "Test chain"
+
+      diffCount = 0
+      chain.snap "1st chain transformation", (go, index, name, chain) ->
+        assert(name == "1st chain transformation", "name is incorrect")
+        go(expect:{foo:'bar'})
+      assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
+
+      chain.snap (go, index, name, chain) ->
+        assert(name == "", "name is incorrect")
+        go(gather: (go, index, name, chain) ->
+          console.log('gatherer:\n', name);
+          diffCount = go(stuff)
+        , expect:{foo:'bar'})
+      assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
+
+      chain.snap "3rd chain transformation", (go, index, name, chain) ->
+        assert(name == "3rd chain transformation", "name is incorrect")
+        go(expect:{foo:'bar'})
+      assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
+
+      chain.snap (go, index, name, chain) ->
+        assert(name == "", "name is incorrect")
+        go()
+      assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
+
+      chain.snap "5th chain transformation", (go, index, name, chain) ->
+        assert(name == "5th chain transformation", "name is incorrect")
+        go(expect:{foo:'baz'})
+      assert(diffCount == 1, "diff count was "+diffCount+", but should've been 1")
+
 
 
