@@ -127,6 +127,38 @@ describe "Snap chain", ->
       assert(chain.name == "4th chain transformation", "name is not what we set it to")
 
   describe "Constraining tool", ->
+    it "should repeatedly call the last gatherer that was set into the chain", ->
+      stuff =
+        foo: 'bar'
+        baz: 12
+      chain = new SnapChain "Test chain"
+
+      chain.snap "1st chain transformation", (go) ->
+        go()
+
+      gatherer1 = sinon.spy (go) ->
+        go(stuff)
+      chain.snap "2nd chain transformation", (go) ->
+        go(gather: gatherer1)
+      assert(gatherer1.callCount == 1, "gatherer1 was called "+gatherer1.callCount+" times, but should've been called once")
+
+      chain.snap "3rd chain transformation", (go) ->
+        go()
+      assert(gatherer1.callCount == 2, "gatherer1 was called "+gatherer1.callCount+" times, but should've been called twice")
+
+      gatherer2 = sinon.spy (go) ->
+        go(stuff.foo)
+      chain.snap "4th chain transformation", (go) ->
+        go(gather: gatherer2)
+      assert(gatherer1.callCount == 2, "gatherer1 was called "+gatherer1.callCount+" times, but should've been called twice")
+      assert(gatherer2.callCount == 1, "gatherer2 was called "+gatherer2.callCount+" times, but should've been called twice")
+
+      chain.snap "5th chain transformation", (go) ->
+        go()
+      assert(gatherer1.callCount == 2, "gatherer1 was called "+gatherer1.callCount+" times, but should've been called twice")
+      assert(gatherer2.callCount == 2, "gatherer2 was called "+gatherer2.callCount+" times, but should've been called twice")
+
+
     it "should ", ->
       chain = new SnapChain "Test chain"
 
