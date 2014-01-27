@@ -1,6 +1,6 @@
 {
   "name": "snap",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Action queue and simple constraining tool",
   "main": "index.js",
   "scripts": {
