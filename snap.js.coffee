@@ -136,6 +136,8 @@ class SnapChain
           console.error "   Found: ", d.found, "\n Expected: ", d.expected
           console.groupEnd()  if _.isFunction(console.groupEnd)
 
+        diffs.length
+
 
       differences = (snapshot, expectation) =>
         # We'll clone the input here so that we see what they looked like
@@ -159,23 +161,24 @@ class SnapChain
       # Compares a snapshot with what is currently expected.
       compare = (snapshot, expectation) =>
         # Logs an error if the snapshot isn't what we expected.
-        log differences(snapshot, expectation)
+        diffCount = log(differences(snapshot, expectation))
 
         # After running the comparison, we should stop waiting.
         # The onComplete callback then runs the next step.
         @_actionQueue.complete()
+        diffCount
 
       gathererContext = {}
       next = (snapshot) =>
-        
+        diffCount = 0
         # When the gatherer provides a snapshot, run a comparison.
         unless _.isEmpty(settings.expect)
-          compare snapshot, settings.expect
+          diffCount = compare(snapshot, settings.expect)
         else
           # Stop waiting.
           # The onComplete callback then runs the next step.
           @_actionQueue.complete()
-
+        diffCount
       
       # Gather our state.
       settings.gather.call gathererContext, next

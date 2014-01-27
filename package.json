@@ -4,7 +4,7 @@
   "description": "Action queue and simple constraining tool",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -r coffee-script test/*"
+    "test": "mocha -r coffee-script test/* -R spec"
   },
   "author": "Ryan Barry",
   "license": "ISC",

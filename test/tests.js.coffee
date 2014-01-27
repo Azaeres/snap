@@ -151,7 +151,7 @@ describe "Snap chain", ->
       chain.snap "4th chain transformation", (go) ->
         go(gather: gatherer2)
       assert(gatherer1.callCount == 2, "gatherer1 was called "+gatherer1.callCount+" times, but should've been called twice")
-      assert(gatherer2.callCount == 1, "gatherer2 was called "+gatherer2.callCount+" times, but should've been called twice")
+      assert(gatherer2.callCount == 1, "gatherer2 was called "+gatherer2.callCount+" times, but should've been called once")
 
       chain.snap "5th chain transformation", (go) ->
         go()
@@ -159,9 +159,47 @@ describe "Snap chain", ->
       assert(gatherer2.callCount == 2, "gatherer2 was called "+gatherer2.callCount+" times, but should've been called twice")
 
 
-    it "should ", ->
+    it "should compare gathered state with expected state", ->
+      stuff =
+        foo: 'bar'
+        baz: 12
       chain = new SnapChain "Test chain"
 
+      chain.snap "1st chain transformation", (go) ->
+        go()
+
+      diffCount = 0
+      gatherer1 = sinon.spy (go) ->
+        diffCount = go(stuff)
+      chain.snap "2nd chain transformation", (go) ->
+        go(gather: gatherer1, expect:{foo: 'foo'})
+      assert(gatherer1.callCount == 1, "gatherer1 was called "+gatherer1.callCount+" times, but should've been called once")
+      assert(diffCount == 1, "diff count was "+diffCount+", but should've been 1")
+
+      chain.snap "3rd chain transformation", (go) ->
+        go(expect: {baz:12, foo:'baz', a:2})
+      assert(gatherer1.callCount == 2, "gatherer1 was called "+gatherer1.callCount+" times, but should've been called twice")
+      assert(diffCount == 2, "diff count was "+diffCount+", but should've been 2")
+
+      gatherer2 = sinon.spy (go) ->
+        diffCount = go({foo:stuff.foo})
+      chain.snap "4th chain transformation", (go) ->
+        go(gather: gatherer2, expect: {foo:'foo'})
+      assert(gatherer1.callCount == 2, "gatherer1 was called "+gatherer1.callCount+" times, but should've been called twice")
+      assert(gatherer2.callCount == 1, "gatherer2 was called "+gatherer2.callCount+" times, but should've been called onces")
+      assert(diffCount == 1, "diff count was "+diffCount+", but should've been 1")
+
+      chain.snap "5th chain transformation", (go) ->
+        go()
+      assert(gatherer1.callCount == 2, "gatherer1 was called "+gatherer1.callCount+" times, but should've been called twice")
+      assert(gatherer2.callCount == 2, "gatherer2 was called "+gatherer2.callCount+" times, but should've been called twice")
+      assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
+
+      chain.snap "6th chain transformation", (go) ->
+        go({})
+      assert(gatherer1.callCount == 2, "gatherer1 was called "+gatherer1.callCount+" times, but should've been called twice")
+      assert(gatherer2.callCount == 3, "gatherer2 was called "+gatherer2.callCount+" times, but should've been called three times")
+      assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
 
 
 
