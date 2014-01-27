@@ -202,6 +202,8 @@ describe "Snap chain", ->
       assert(gatherer2.callCount == 3, "gatherer2 was called "+gatherer2.callCount+" times, but should've been called three times")
       assert(diffCount == 0, "diff count was "+diffCount+", but should've been 0")
 
-
+    # TODO:
+    # Test setting `expect` before `gather` is set.
+    # 
 
 
